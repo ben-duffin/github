@@ -27,9 +27,6 @@
  */
 class GitHub
 {
-	// internal constant to enable/disable debugging
-	const DEBUG = false;
-
 	// url for the bitly-api
 	const API_URL = 'https://github.com/api/v2/json';
 
@@ -676,147 +673,461 @@ class GitHub
 
 
 // repository
-	public function reposSearch($q)
+	/**
+	 * Search for repositories
+	 *
+	 * @return	array
+	 * @param	string $q						The string to search for
+	 * @param	int[optional] $page				The page to start from.
+	 * @param	string[optional] $language		The language to search for, language searching is done with the capitalized format of the name: "Ruby", not "ruby". It takes the same values as the language drop down on http://github.com/search.
+	 */
+	public function reposSearch($q, $page = null, $language = null)
 	{
+		// build URL
+		$url = 'repos/search/'. (string) $q;
 
+		// build parameters
+		$parameters = null;
+		if($page !== null) $parameters['page'] = (int) $page;
+		if($language !== null) $parameters['language'] = (string) $language;
+
+		// make the call
+		return $this->doCall($url, $parameters);
 	}
 
 
+	/**
+	 * Show more info about a repo
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo owner.
+	 * @param	string $repository		The name of the repository.
+	 */
 	public function reposShow($username, $repository)
 	{
+		// build URL
+		$url = 'repos/show/'. (string) $username .'/'. (string) $repository;
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
+	/**
+	 * Update a repo
+	 *
+	 * @return	void
+	 * @param	string $username				The username of the repo owner.
+	 * @param	string $repository				The name of the repository.
+	 * @param	string[optional] $description	The new description.
+	 * @param	string[optional] $homepage		The new homepage.
+	 * @param	bool[optional] $hasWiki			Should the wiki be enabled?
+	 * @param	bool[optional] $hasIssues		Should issues be enabled?
+	 * @param	bool[optional] $hasDownloads	Should the download be enabled?
+	 */
 	public function reposUpdate($repository, $description = null, $homepage = null, $hasWiki = null, $hasIssues = null, $hasDownloads = null)
 	{
+		// build URL
+		$url = 'repos/show/'. (string) $username .'/'. (string) $respository;
 
+		// build parameters
+		$parameters = null;
+		if($description !== null) $parameters['values[description]'] = (string) $description;
+		if($homepage !== null) $parameters['values[homepage]'] = (string) $homepage;
+		if($hasWiki !== null) $parameters['values[has_wiki]'] = ((bool) $hasWiki) ? '1' : '0';
+		if($hasIssues !== null) $parameters['values[has_issues]'] = ((bool) $hasIssues) ? '1' : '0';
+		if($hasDownloads !== null) $parameters['values[has_downloads]'] = ((bool) $hasDownloads) ? '1' : '0';
+
+		// make the call
+		return $this->doCall($url, $parameters, 'POST');
 	}
 
 
+	/**
+	 * List all repos for a user
+	 *
+	 * @return	array
+	 * @param	string $username	The username.
+	 */
 	public function reposList($username)
 	{
+		// build URL
+		$url = 'repos/show/'. (string) $username;
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
+	/**
+	 * Start watching a repository
+	 *
+	 * @return	void
+	 * @param	string $username		The username of the repo owner.
+	 * @param	string $repository		The name of the repository.
+	 */
 	public function reposWatch($username, $repository)
 	{
+		// build URL
+		$url = 'repos/watch/'. (string) $username .'/'. (string) $repository;
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
+	/**
+	 * Stop watching a repository
+	 *
+	 * @return	void
+	 * @param	string $username		The username of the repo owner.
+	 * @param	string $repository		The name of the repository.
+	 */
 	public function reposUnwatch($username, $repository)
 	{
+		// build URL
+		$url = 'repos/unwatch/'. (string) $username .'/'. (string) $repository;
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
+	/**
+	 * Fork a repository
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo owner.
+	 * @param	string $repository		The name of the repository.
+	 */
 	public function reposFork($username, $repository)
 	{
+		// build URL
+		$url = 'repos/fork/'. (string) $username .'/'. (string) $repository;
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
+	/**
+	 * Create a repository
+	 *
+	 * @return	void
+	 * @param	string $name						The name of the repo
+	 * @param	string[optional] $description		The description of the repo
+	 * @param	string[optional] $homepage			The homepage of the repo
+	 * @param	bool[optional] $public				Should the repo be public?
+	 */
 	public function reposCreate($name, $description = null, $homepage = null, $public = true)
 	{
+		// build URL
+		$url = 'repos/create';
 
+		// build parameters
+		$parameters['name'] = (string) $name;
+		if($description !== null) $parameters['description'] = (string) $description;
+		if($homepage !== null) $parameters['homepage'] = (string) $homepage;
+		$parameters['public'] = ((bool) $public) ? '1' : '0';
+
+		// make the call
+		return $this->doCall($url, $parameters, 'POST');
 	}
 
 
-	public function reposDelete($repository)
+	/**
+	 * Delete a repository
+	 *
+	 * @return	void
+	 * @param	string $username		The username of the repo owner.
+	 * @param	string $repository		The name of the repository.
+	 */
+	public function reposDelete($username, $repository)
 	{
+		throw new GitHubException('Not implemented');
 
+		// build URL
+		$url = 'repos/delete/'. $this->getLogin() .'/'. (string) $repository;
+
+		// make the call
+		return $this->doCall($url, null, 'POST');
 	}
 
 
-	public function reposSetPrivate($repository)
+	/**
+	 * Set a public repository private
+	 *
+	 * @return	void
+	 * @param	string $username		The username of the repo owner.
+	 * @param	string $repository		The name of the repository.
+	 */
+	public function reposSetPrivate($username, $repository)
 	{
+		// build URL
+		$url = 'repos/set/private/'. (string) $username .'/'. (string) $repository;
 
+		// make the call
+		return $this->doCall($url, null, 'POST');
 	}
 
 
-	public function reposSetPublic($repository)
+	/**
+	 * Set a private repository public
+	 *
+	 * @return	void
+	 * @param	string $username		The username of the repo owner.
+	 * @param	string $repository		The name of the repository.
+	 */
+	public function reposSetPublic($username, $repository)
 	{
+		// build URL
+		$url = 'repos/set/public/'. (string) $username .'/'. (string) $repository;
 
+		// make the call
+		return $this->doCall($url, null, 'POST');
 	}
 
 
-	public function reposKeys($repository)
+	/**
+	 * List all deploy keys
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo owner.
+	 * @param	string $repository		The name of the repository.
+	 */
+	public function reposKeys($username, $repository)
 	{
+		// build URL
+		$url = 'repos/keys/'. (string) $username .'/'. (string) $repository;
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
-	public function reposKeyAdd($repository, $title, $key)
+	/**
+	 * Add a new deploy key
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo owner.
+	 * @param	string $repository		The name of the repository.
+	 * @param	string $title			The title of the key.
+	 * @param	string $key				The data of the key.
+	 */
+	public function reposKeyAdd($username, $repository, $title, $key)
 	{
+		throw new GitHubException('Not implemented');
 
+		// build URL
+		$url = 'repos/key/'. (string) $username .'/'. (string) $repository .'/add';
+
+		// build parameters
+		$parameters['title'] = (string) $title;
+		$parameters['key'] = (string) $key;
+
+		// make the call
+		return $this->doCall($url, $parameters, 'POST');
 	}
 
 
-	public function reposKeyRemove($repository, $id)
+	/**
+	 * Removes a deploy key
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo owner.
+	 * @param	string $repository		The name of the repository.
+	 * @param	string $id				The id of the key.
+	 */
+	public function reposKeyRemove($username, $repository, $id)
 	{
+		throw new GitHubException('Not implemented');
 
+		// build URL
+		$url = 'repos/key/'. (string) $username .'/'. (string) $repository .'/remove';
+
+		// build parameters
+		$parameters['id'] = (string) $id;
+
+		// make the call
+		return $this->doCall($url, $parameters, 'POST');
 	}
 
 
+	/**
+	 * Get a list of collaborators
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo owner.
+	 * @param	string $repository		The name of the repository.
+	 */
 	public function reposCollaborators($username, $repository)
 	{
+		// build URL
+		$url = 'repos/show/'.  (string) $username .'/'. (string) $repository .'/collaborators';
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
+	/**
+	 * Add a collaborator
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo owner.
+	 * @param	string $repository		The name of the repository.
+	 * @param	string $collaborator	The username of the collaborator
+	 */
 	public function reposCollaboratorAdd($username, $repository, $collaborator)
 	{
+		// build URL
+		$url = 'repos/collaborators/'.  (string) $username .'/'. (string) $repository .'/add/'. (string) $collaborator;
 
+		// make the call
+		return $this->doCall($url, null, 'POST');
 	}
 
 
+	/**
+	 * Add a collaborator
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo owner.
+	 * @param	string $repository		The name of the repository.
+	 * @param	string $collaborator	The username of the collaborator
+	 */
 	public function reposCollaboratorRemove($username, $repository, $collaborator)
 	{
+		// build URL
+		$url = 'repos/collaborators/'.  (string) $username .'/'. (string) $repository .'/remove/'. (string) $collaborator;
 
+		// make the call
+		return $this->doCall($url, null, 'POST');
 	}
 
 
+	/**
+	 * Get all repos you can push to, but are not your own
+	 *
+	 * @return	array
+	 */
 	public function reposPushable()
 	{
+		// build URL
+		$url = 'repos/pushable';
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
-	public function reposContributors($username, $repository)
+	/**
+	 * Get a list of contributors
+	 *
+	 * @return	array
+	 * @param	string $username					The username of the repo owner.
+	 * @param	string $repository					The name of the repository.
+	 * @param	bool[optional] $includeNonUsers		Include non-users?
+	 */
+	public function reposContributors($username, $repository, $includeNonUsers = false)
 	{
+		// build URL
+		$url = 'repos/show/'.  (string) $username .'/'. (string) $repository .'/contributors';
 
+		if((bool) $includeNonUsers) $url .= '/anon';
+
+		// make the call
+		return $this->doCall($url);
 	}
 
 
-	public function reposWatchers($username, $repository)
+	/**
+	 * Get a list of watchers
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo owner.
+	 * @param	string $repository		The name of the repository.
+	 * @param	bool[optional] $full	Include full profile?
+	 */
+	public function reposWatchers($username, $repository, $full = false)
 	{
+		// build URL
+		$url = 'repos/show/'.  (string) $username .'/'. (string) $repository .'/watchers';
 
+		// build parameters
+		$parameters = null;
+		if((bool) $full) $parameters['full'] = '1';
+
+		// make the call
+		return $this->doCall($url, $parameters);
 	}
 
 
+	/**
+	 * Get the full network
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo owner.
+	 * @param	string $repository		The name of the repository.
+	 */
 	public function reposNetwork($username, $repository)
 	{
+		// build URL
+		$url = 'repos/show/'.  (string) $username .'/'. (string) $repository .'/network';
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
+	/**
+	 * Get the languages used in a repository
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo owner.
+	 * @param	string $repository		The name of the repository.
+	 */
 	public function reposLanguages($username, $repository)
 	{
+		// build URL
+		$url = 'repos/show/'.  (string) $username .'/'. (string) $repository .'/languages';
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
+	/**
+	 * Get a list of tags
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo owner.
+	 * @param	string $repository		The name of the repository.
+	 */
 	public function reposTags($username, $repository)
 	{
+		// build URL
+		$url = 'repos/show/'.  (string) $username .'/'. (string) $repository .'/tags';
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
+	/**
+	 * Get a list of branches
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo owner.
+	 * @param	string $repository		The name of the repository.
+	 */
 	public function reposBranches($username, $repository)
 	{
+		// build URL
+		$url = 'repos/show/'.  (string) $username .'/'. (string) $repository .'/branches';
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
