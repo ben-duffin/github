@@ -594,81 +594,253 @@ class GitHub
 
 
 // issues
+	/**
+	 * Search for issues
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo-owner.
+	 * @param	string $repository		The name of repository.
+	 * @param	string $state			The state of the issues.
+	 * @param	string $q				The string to search for.
+	 */
 	public function issuesSearch($username, $repository, $state, $q)
 	{
+		// build URL
+		$url = 'issues/search/'. (string) $username .'/'. (string) $repository .'/'. (string) $state .'/'. (string) $q;
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
+	/**
+	 * Get a list of issues
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo-owner.
+	 * @param	string $repository		The name of repository.
+	 * @param	string $state			The state of the issues.
+	 */
 	public function issuesList($username, $repository, $state)
 	{
+		// build URL
+		$url = 'issues/list/'. (string) $username .'/'. (string) $repository .'/'. (string) $state;
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
+	/**
+	 * Get a list of issues with a certain label
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo-owner.
+	 * @param	string $repository		The name of repository.
+	 * @param	string $label			The label of the issues.
+	 */
 	public function issuesListWithLabel($username, $repository, $label)
 	{
+		// build URL
+		$url = 'issues/list/'. (string) $username .'/'. (string) $repository .'/label/'. (string) $label;
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
+	/**
+	 * Show an issue
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo-owner.
+	 * @param	string $repository		The name of repository.
+	 * @param	string $number			The number of the issue.
+	 */
 	public function issuesShow($username, $repository, $number)
 	{
+		// build URL
+		$url = 'issues/show/'. (string) $username .'/'. (string) $repository .'/'. (string) $number;
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
+	/**
+	 * Show the comments on an issue
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo-owner.
+	 * @param	string $repository		The name of repository.
+	 * @param	string $number			The number of the issue.
+	 */
 	public function issuesComments($username, $repository, $number)
 	{
+		// build URL
+		$url = 'issues/comments/'. (string) $username .'/'. (string) $repository .'/'. (string) $number;
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
+	/**
+	 * Open a new issue
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo-owner.
+	 * @param	string $repository		The name of repository.
+	 * @param	string $title			The title of the issue.
+	 * @param	string $body			The body of the issue.
+	 */
 	public function issuesOpen($username, $repository, $title, $body)
 	{
+		// build URL
+		$url = 'issues/open/'. (string) $username .'/'. (string) $repository;
 
+		// build parameters
+		$parameters['title'] = (string) $title;
+		$parameters['body'] = (string) $body;
+
+		// make the call
+		return $this->doCall($url, $parameters, 'POST');
 	}
 
 
+	/**
+	 * Close an issue
+	 *
+	 * @return	void
+	 * @param	string $username		The username of the repo-owner.
+	 * @param	string $repository		The name of repository.
+	 * @param	string $number			The number of the issue.
+	 */
 	public function issuesClose($username, $repository, $number)
 	{
+		// build URL
+		$url = 'issues/close/'. (string) $username .'/'. (string) $repository .'/'. (string) $number;
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
+	/**
+	 * Reopen an issue
+	 *
+	 * @return	void
+	 * @param	string $username		The username of the repo-owner.
+	 * @param	string $repository		The name of repository.
+	 * @param	string $number			The number of the issue.
+	 */
 	public function issuesReOpen($username, $repository, $number)
 	{
+		// build URL
+		$url = 'issues/close/'. (string) $username .'/'. (string) $repository .'/'. (string) $number;
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
+	/**
+	 * Edit an issue
+	 *
+	 * @param	string $username		The username of the repo-owner.
+	 * @param	string $repository		The name of repository.
+	 * @param	string $number			The number of the issue.
+	 * @param	string $title			The title of the issue.
+	 * @param	string $body			The body of the issue.
+	 */
 	public function issuesEdit($username, $repository, $number, $title, $body)
 	{
+		// build URL
+		$url = 'issues/edit/'. (string) $username .'/'. (string) $repository .'/'. (string) $number;
 
+		// build parameters
+		$parameters['title'] = (string) $title;
+		$parameters['body'] = (string) $body;
+
+		// make the call
+		return $this->doCall($url, $parameters, 'POST');
 	}
 
 
+	/**
+	 * Get a list of the labels
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo-owner.
+	 * @param	string $repository		The name of repository.
+	 */
 	public function issuesLabels($username, $repository)
 	{
+		// build URL
+		$url = 'issues/labels/'. (string) $username .'/'. (string) $repository;
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
-	public function issuesLabelAdd($username, $repository, $label, $number)
+	/**
+	 * Add a label on an issue
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo-owner.
+	 * @param	string $repository		The name of repository.
+	 * @param	string $number			The number of the issue.
+	 * @param	string $label			The label to add.
+	 */
+	public function issuesLabelAdd($username, $repository, $number, $label)
 	{
+		// build URL
+		$url = 'issues/label/add/'. (string) $username .'/'. (string) $repository .'/'. (string) $label .'/'. (string) $number;
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
+	/**
+	 * Add a label on an issue
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo-owner.
+	 * @param	string $repository		The name of repository.
+	 * @param	string $number			The number of the issue.
+	 * @param	string $label			The label to remove.
+	 */
 	public function issuesLabelRemove($username, $repository, $label, $number)
 	{
+		// build URL
+		$url = 'issues/label/remove/'. (string) $username .'/'. (string) $repository .'/'. (string) $label .'/'. (string) $number;
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
-	public function issuesComment($username, $repository, $id, $comments)
+	/**
+	 * Add a comments on an issue
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repo-owner.
+	 * @param	string $repository		The name of repository.
+	 * @param	string $number			The number of the issue.
+	 * @param	string $comment			The comment
+	 */
+	public function issuesComment($username, $repository, $id, $comment)
 	{
+		// build URL
+		$url = 'issues/comment/'. (string) $username .'/'. (string) $repository .'/'. (string) $number;
 
+		// build parameters
+		$parameters['comment'] = (string) $comment;
+
+		// make the call
+		return $this->doCall($url, $parameters, 'POST');
 	}
 
 
