@@ -103,9 +103,10 @@ class GitHub
 	 * @return	mixed
 	 * @param	string $url						The URL to call.
 	 * @param	array[optional] $parameters		The parameters to send.
-	 * @param	string[optional] $methos		The method to use, possible values are: GET, POST.
+	 * @param	string[optional] $method		The method to use, possible values are: GET, POST.
+	 * @param	bool[optional] $expectJSON		Do we expect JSON?
 	 */
-	private function doCall($url, array $parameters = null, $method = 'GET')
+	private function doCall($url, array $parameters = null, $method = 'GET', $expectJSON = true)
 	{
 		// redefine
 		$url = (string) $url;
@@ -158,8 +159,8 @@ class GitHub
 			$options[CURLOPT_POST] = false;
 			if(!empty($parameters))
 			{
-				if(substr_count($url, '?') > 0) $url .= '&'. http_build_query($parameters);
-				else $url .= '?'. http_build_query($parameters);
+				if(substr_count($url, '?') > 0) $options[CURLOPT_URL] .= '&'. http_build_query($parameters);
+				else $options[CURLOPT_URL] .= '?'. http_build_query($parameters);
 			}
 		}
 
@@ -182,6 +183,9 @@ class GitHub
 
 		// error?
 		if($errorNumber != '') throw new GitHubException($errorMessage, $errorNumber);
+
+		// we don't expect JSON
+		if(!$expectJSON) return $response;
 
 		// we expect JSON so decode it
 		$json = @json_decode($response, true);
@@ -324,7 +328,7 @@ class GitHub
 	 */
 	public function usersSearch($q)
 	{
-		// build url
+		// build URL
 		$url = 'user/search/'. (string) $q;
 
 		// make the call
@@ -340,7 +344,7 @@ class GitHub
 	 */
 	public function usersEmail($email)
 	{
-		// build url
+		// build URL
 		$url = 'user/email/'. (string) $email;
 
 		// make the call
@@ -356,7 +360,7 @@ class GitHub
 	 */
 	public function usersShow($username)
 	{
-		// build url
+		// build URL
 		$url = 'user/show/'. (string) $username;
 
 		// make the call
@@ -384,7 +388,7 @@ class GitHub
 		if($company !== null) $parameters['values[company]'] = (string) $company;
 		if($location !== null) $parameters['values[location]'] = (string) $location;
 
-		// build url
+		// build URL
 		$url = 'user/show/'. $this->getLogin();
 
 		// make the call
@@ -400,7 +404,7 @@ class GitHub
 	 */
 	public function usersShowFollowing($username)
 	{
-		// build url
+		// build URL
 		$url = 'user/show/'. (string) $username .'/following';
 
 		// make the call
@@ -416,7 +420,7 @@ class GitHub
 	 */
 	public function usersShowFollowers($username)
 	{
-		// build url
+		// build URL
 		$url = 'user/show/'. (string) $username .'/followers';
 
 		// make the call
@@ -434,7 +438,7 @@ class GitHub
 	{
 		throw new GitHubException('Not implemented');
 
-		// build url
+		// build URL
 		$url = 'user/follow/'. (string) $username;
 
 		// make the call
@@ -452,7 +456,7 @@ class GitHub
 	{
 		throw new GitHubException('Not implemented');
 
-		// build url
+		// build URL
 		$url = 'user/unfollow/'. (string) $username;
 
 		// make the call
@@ -468,7 +472,7 @@ class GitHub
 	 */
 	public function usersReposWatches($username)
 	{
-		// build url
+		// build URL
 		$url = 'repos/watched/'. (string) $username;
 
 		// make the call
@@ -483,7 +487,7 @@ class GitHub
 	 */
 	public function usersKeys()
 	{
-		// build url
+		// build URL
 		$url = 'user/keys';
 
 		// make the call
@@ -502,7 +506,7 @@ class GitHub
 	{
 		throw new GitHubException('Not implemented');
 
-		// build url
+		// build URL
 		$url = 'user/key/add';
 
 		// build parameters
@@ -524,7 +528,7 @@ class GitHub
 	{
 		throw new GitHubException('Not implemented');
 
-		// build url
+		// build URL
 		$url = 'user/key/remove';
 
 		// build parameters
@@ -542,7 +546,7 @@ class GitHub
 	 */
 	public function usersEmails()
 	{
-		// build url
+		// build URL
 		$url = 'user/emails';
 
 		// make the call
@@ -560,7 +564,7 @@ class GitHub
 	{
 		throw new GitHubException('Not implemented');
 
-		// build url
+		// build URL
 		$url = 'user/email/add';
 
 		// build parameters
@@ -581,7 +585,7 @@ class GitHub
 	{
 		throw new GitHubException('Not implemented');
 
-		// build url
+		// build URL
 		$url = 'user/email/remove';
 
 		// build parameters
@@ -827,7 +831,7 @@ class GitHub
 	 */
 	public function commitsList($username, $repository, $branch = 'master')
 	{
-		// build url
+		// build URL
 		$url = 'commits/list/'. (string) $username .'/'. (string) $repository .'/'. (string) $branch;
 
 		// make the call
@@ -846,7 +850,7 @@ class GitHub
 	 */
 	public function commitsFileList($username, $repository, $path, $branch = 'master')
 	{
-		// build url
+		// build URL
 		$url = 'commits/list/'. (string) $username .'/'. (string) $repository .'/'. (string) $branch .'/'. (string) $path;
 
 		// make the call
@@ -860,11 +864,11 @@ class GitHub
 	 * @return	array
 	 * @param	string $username			The username of the repository owner.
 	 * @param	string $repository			The name of the repository.
-	 * @param	string $sha					The sha/id of the commit.
+	 * @param	string $sha					The SHA/id of the commit.
 	 */
 	public function commitsShow($username, $repository, $sha)
 	{
-		// build url
+		// build URL
 		$url = 'commits/show/'. (string) $username .'/'. (string) $repository .'/'. (string) $sha;
 
 		// make the call
@@ -873,39 +877,117 @@ class GitHub
 
 
 // object
+	/**
+	 * Get the content of a tree by his SHA.
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repository owner.
+	 * @param	string $repository		The name of the repository.
+	 * @param	string $sha				The SHA.
+	 */
 	public function treeShow($username, $repository, $sha)
 	{
+		// build URL
+		$url = 'tree/show/'. (string) $username .'/'. $repository .'/'. (string) $sha;
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
+	/**
+	 * Get all metadata of each tree and blob object
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repository owner.
+	 * @param	string $repository		The name of the repository.
+	 * @param	string $sha				The SHA.
+	 */
 	public function treeFull($username, $repository, $sha)
 	{
+		// build URL
+		$url = 'tree/full/'. (string) $username .'/'. $repository .'/'. (string) $sha;
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
+	/**
+	 * Get the data about a blob by a tree SHA.
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repository owner.
+	 * @param	string $repository		The name of the repository.
+	 * @param	string $sha				The SHA.
+	 * @param	string $path			The path to the blob.
+	 * @param	bool[optional] $meta	If true only the metadata will be returned.
+	 */
 	public function blobShow($username, $repository, $sha, $path, $meta = false)
 	{
+		// build URL
+		$url = 'blob/show/'. (string) $username .'/'. $repository .'/'. (string) $sha .'/'. (string) $path;
 
+		// build parameters
+		$parameters = null;
+		if((bool) $meta) $parameters['meta'] = '1';
+
+		// make the call
+		return $this->doCall($url, $parameters);
 	}
 
 
+	/**
+	 * Get a list of all blobs
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repository owner.
+	 * @param	string $repository		The name of the repository.
+	 * @param	string $sha				The SHA.
+	 */
 	public function blobAll($username, $repository, $sha)
 	{
+		// build URL
+		$url = 'blob/all/'. (string) $username .'/'. $repository .'/'. (string) $sha;
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
+	/**
+	 * Get a list of all blobs including metadata
+	 *
+	 * @return	array
+	 * @param	string $username		The username of the repository owner.
+	 * @param	string $repository		The name of the repository.
+	 * @param	string $sha				The SHA.
+	 */
 	public function blobFull($username, $repository, $sha)
 	{
+		// build URL
+		$url = 'blob/full/'. (string) $username .'/'. $repository .'/'. (string) $sha;
 
+		// make the call
+		return $this->doCall($url);
 	}
 
 
-	public function blohShow($username, $repository, $sha)
+	/**
+	 * Get the raw content of a blob.
+	 *
+	 * @return	void
+	 * @param	string $username		The username of the repository owner.
+	 * @param	string $repository		The name of the repository.
+	 * @param	string $sha				The SHA.
+	 */
+	public function blobShowRawData($username, $repository, $sha)
 	{
+		// build URL
+		$url = 'blob/show/'. (string) $username .'/'. $repository .'/'. (string) $sha;
 
+		// make the call
+		return $this->doCall($url, null, 'GET', false);
 	}
 }
 
