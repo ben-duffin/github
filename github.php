@@ -593,62 +593,320 @@ class GitHub
 
 
 // issues
-	public function issuesSearch($username, $repo, $state, $q);
-	public function issuesList($username, $repo, $state);
-	public function issuesListWithLabel($username, $repo, $label);
-	public function issuesShow($username, $repo, $number);
-	public function issuesComments($username, $repo, $number);
-	public function issuesOpen($username, $repo, $title, $body);
-	public function issuesClose($username, $repo, $number);
-	public function issuesReOpen($username, $repo, $number);
-	public function issuesEdit($username, $repo, $number, $title, $body);
-	public function issuesLabels($username, $repo);
-	public function issuesLabelAdd($username, $repo, $label, $number);
-	public function issuesLabelRemove($username, $repo, $label, $number);
-	public function issuesComment($username, $repo, $id, $comments);
+	public function issuesSearch($username, $repository, $state, $q)
+	{
+
+	}
+
+
+	public function issuesList($username, $repository, $state)
+	{
+
+	}
+
+
+	public function issuesListWithLabel($username, $repository, $label)
+	{
+
+	}
+
+
+	public function issuesShow($username, $repository, $number)
+	{
+
+	}
+
+
+	public function issuesComments($username, $repository, $number)
+	{
+
+	}
+
+
+	public function issuesOpen($username, $repository, $title, $body)
+	{
+
+	}
+
+
+	public function issuesClose($username, $repository, $number)
+	{
+
+	}
+
+
+	public function issuesReOpen($username, $repository, $number)
+	{
+
+	}
+
+
+	public function issuesEdit($username, $repository, $number, $title, $body)
+	{
+
+	}
+
+
+	public function issuesLabels($username, $repository)
+	{
+
+	}
+
+
+	public function issuesLabelAdd($username, $repository, $label, $number)
+	{
+
+	}
+
+
+	public function issuesLabelRemove($username, $repository, $label, $number)
+	{
+
+	}
+
+
+	public function issuesComment($username, $repository, $id, $comments)
+	{
+
+	}
 
 
 // repository
-	public function reposSearch($q);
-	public function reposShow($username, $repo);
-	public function reposUpdate($repo, $description = null, $homepage = null, $hasWiki = null, $hasIssues = null, $hasDownloads = null);
-	public function reposList($username);
-	public function reposWatch($username, $repo);
-	public function reposUnwatch($username, $repo);
-	public function reposFork($username, $repo);
-	public function reposCreate($name, $description = null, $homepage = null, $public = true);
-	public function reposDelete($repo);
-	public function reposSetPrivate($repo);
-	public function reposSetPublic($repo);
-	public function reposKeys($repo);
-	public function reposKeyAdd($repo, $title, $key);
-	public function reposKeyRemove($repo, $id);
-	public function reposCollaborators($username, $repo);
-	public function reposCollaboratorAdd($username, $repo, $collaborator);
-	public function reposCollaboratorRemove($username, $repo, $collaborator);
-	public function reposPushable();
-	public function reposContributors($username, $repo);
-	public function reposWatchers($username, $repo);
-	public function reposNetwork($username, $repo);
-	public function reposLanguages($username, $repo);
-	public function reposTags($username, $repo);
-	public function reposBranches($username, $repo);
+	public function reposSearch($q)
+	{
+
+	}
+
+
+	public function reposShow($username, $repository)
+	{
+
+	}
+
+
+	public function reposUpdate($repository, $description = null, $homepage = null, $hasWiki = null, $hasIssues = null, $hasDownloads = null)
+	{
+
+	}
+
+
+	public function reposList($username)
+	{
+
+	}
+
+
+	public function reposWatch($username, $repository)
+	{
+
+	}
+
+
+	public function reposUnwatch($username, $repository)
+	{
+
+	}
+
+
+	public function reposFork($username, $repository)
+	{
+
+	}
+
+
+	public function reposCreate($name, $description = null, $homepage = null, $public = true)
+	{
+
+	}
+
+
+	public function reposDelete($repository)
+	{
+
+	}
+
+
+	public function reposSetPrivate($repository)
+	{
+
+	}
+
+
+	public function reposSetPublic($repository)
+	{
+
+	}
+
+
+	public function reposKeys($repository)
+	{
+
+	}
+
+
+	public function reposKeyAdd($repository, $title, $key)
+	{
+
+	}
+
+
+	public function reposKeyRemove($repository, $id)
+	{
+
+	}
+
+
+	public function reposCollaborators($username, $repository)
+	{
+
+	}
+
+
+	public function reposCollaboratorAdd($username, $repository, $collaborator)
+	{
+
+	}
+
+
+	public function reposCollaboratorRemove($username, $repository, $collaborator)
+	{
+
+	}
+
+
+	public function reposPushable()
+	{
+
+	}
+
+
+	public function reposContributors($username, $repository)
+	{
+
+	}
+
+
+	public function reposWatchers($username, $repository)
+	{
+
+	}
+
+
+	public function reposNetwork($username, $repository)
+	{
+
+	}
+
+
+	public function reposLanguages($username, $repository)
+	{
+
+	}
+
+
+	public function reposTags($username, $repository)
+	{
+
+	}
+
+
+	public function reposBranches($username, $repository)
+	{
+
+	}
 
 
 // commit
-	public function commitsList($username, $repo, $branch = 'master');
-	public function commitsFileList($username, $repo, $path, $branch = 'master');
-	public function commitsShow($username, $repo, $sha);
+	/**
+	 * List the commits on a branch
+	 *
+	 * @return	array
+	 * @param	string $username			The username of the repository owner.
+	 * @param	string $repository			The name of the repository.
+	 * @param	string[optional] $branch	The name of the branch.
+	 */
+	public function commitsList($username, $repository, $branch = 'master')
+	{
+		// build url
+		$url = 'commits/list/'. (string) $username .'/'. (string) $repository .'/'. (string) $branch;
+
+		// make the call
+		return $this->doCall($url);
+	}
+
+
+	/**
+	 * Lost the commints for a file
+	 *
+	 * @return	array
+	 * @param	string $username			The username of the repository owner.
+	 * @param	string $repository			The name of the repository.
+	 * @param	string $path				The path to the file.
+	 * @param	string[optional] $branch	The name of the branch.
+	 */
+	public function commitsFileList($username, $repository, $path, $branch = 'master')
+	{
+		// build url
+		$url = 'commits/list/'. (string) $username .'/'. (string) $repository .'/'. (string) $branch .'/'. (string) $path;
+
+		// make the call
+		return $this->doCall($url);
+	}
+
+
+	/**
+	 * Shows a specific commit
+	 *
+	 * @return	array
+	 * @param	string $username			The username of the repository owner.
+	 * @param	string $repository			The name of the repository.
+	 * @param	string $sha					The sha/id of the commit.
+	 */
+	public function commitsShow($username, $repository, $sha)
+	{
+		// build url
+		$url = 'commits/show/'. (string) $username .'/'. (string) $repository .'/'. (string) $sha;
+
+		// make the call
+		return $this->doCall($url);
+	}
 
 
 // object
-	public function treeShow($username, $repo, $sha);
-	public function treeFull($username, $repo, $sha);
-	public function blobShow($username, $repo, $sha, $path, $meta = false);
-	public function blobAll($username, $repo, $sha);
-	public function blobFull($username, $repo, $sha);
-	public function blohShow($username, $repo, $sha);
+	public function treeShow($username, $repository, $sha)
+	{
 
+	}
+
+
+	public function treeFull($username, $repository, $sha)
+	{
+
+	}
+
+
+	public function blobShow($username, $repository, $sha, $path, $meta = false)
+	{
+
+	}
+
+
+	public function blobAll($username, $repository, $sha)
+	{
+
+	}
+
+
+	public function blobFull($username, $repository, $sha)
+	{
+
+	}
+
+
+	public function blohShow($username, $repository, $sha)
+	{
+
+	}
 }
 
 
